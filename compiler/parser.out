@@ -1,365 +1,555 @@
 Created by PLY version 3.11 (http://www.dabeaz.com/ply)
 
-Unused terminals:
-
-    LBRACE
-    RBRACE
-
 Grammar
 
-Rule 0     S' -> statement
-Rule 1     statement -> TYPE ID ASSIGN expression SEMICOLON
-Rule 2     expression -> expression PLUS expression
-Rule 3     expression -> expression MINUS expression
-Rule 4     expression -> expression TIMES expression
-Rule 5     expression -> expression DIVIDE expression
-Rule 6     expression -> LPAREN expression RPAREN
-Rule 7     expression -> NUMBER
-Rule 8     expression -> ID
+Rule 0     S' -> function
+Rule 1     function -> TYPE ID LPAREN params RPAREN LBRACE statements RBRACE
+Rule 2     params -> TYPE ID
+Rule 3     params -> TYPE ID COMMA params
+Rule 4     params -> empty
+Rule 5     statements -> statement
+Rule 6     statements -> statement statements
+Rule 7     statement -> TYPE ID ASSIGN expression SEMICOLON
+Rule 8     statement -> RETURN expression SEMICOLON
+Rule 9     expression -> expression PLUS expression
+Rule 10    expression -> expression MINUS expression
+Rule 11    expression -> expression TIMES expression
+Rule 12    expression -> expression DIVIDE expression
+Rule 13    expression -> LPAREN expression RPAREN
+Rule 14    expression -> NUMBER
+Rule 15    expression -> ID
+Rule 16    empty -> <empty>
 
 Terminals, with rules where they appear
 
-ASSIGN               : 1
-DIVIDE               : 5
-ID                   : 1 8
-LBRACE               : 
-LPAREN               : 6
-MINUS                : 3
-NUMBER               : 7
-PLUS                 : 2
-RBRACE               : 
-RPAREN               : 6
-SEMICOLON            : 1
-TIMES                : 4
-TYPE                 : 1
+ASSIGN               : 7
+COMMA                : 3
+DIVIDE               : 12
+ID                   : 1 2 3 7 15
+LBRACE               : 1
+LPAREN               : 1 13
+MINUS                : 10
+NUMBER               : 14
+PLUS                 : 9
+RBRACE               : 1
+RETURN               : 8
+RPAREN               : 1 13
+SEMICOLON            : 7 8
+TIMES                : 11
+TYPE                 : 1 2 3 7
 error                : 
 
 Nonterminals, with rules where they appear
 
-expression           : 1 2 2 3 3 4 4 5 5 6
-statement            : 0
+empty                : 4
+expression           : 7 8 9 9 10 10 11 11 12 12 13
+function             : 0
+params               : 1 3
+statement            : 5 6
+statements           : 1 6
 
 Parsing method: LALR
 
 state 0
 
-    (0) S' -> . statement
-    (1) statement -> . TYPE ID ASSIGN expression SEMICOLON
+    (0) S' -> . function
+    (1) function -> . TYPE ID LPAREN params RPAREN LBRACE statements RBRACE
 
     TYPE            shift and go to state 2
 
-    statement                      shift and go to state 1
+    function                       shift and go to state 1
 
 state 1
 
-    (0) S' -> statement .
+    (0) S' -> function .
 
 
 
 state 2
 
-    (1) statement -> TYPE . ID ASSIGN expression SEMICOLON
+    (1) function -> TYPE . ID LPAREN params RPAREN LBRACE statements RBRACE
 
     ID              shift and go to state 3
 
 
 state 3
 
-    (1) statement -> TYPE ID . ASSIGN expression SEMICOLON
+    (1) function -> TYPE ID . LPAREN params RPAREN LBRACE statements RBRACE
 
-    ASSIGN          shift and go to state 4
+    LPAREN          shift and go to state 4
 
 
 state 4
 
-    (1) statement -> TYPE ID ASSIGN . expression SEMICOLON
-    (2) expression -> . expression PLUS expression
-    (3) expression -> . expression MINUS expression
-    (4) expression -> . expression TIMES expression
-    (5) expression -> . expression DIVIDE expression
-    (6) expression -> . LPAREN expression RPAREN
-    (7) expression -> . NUMBER
-    (8) expression -> . ID
+    (1) function -> TYPE ID LPAREN . params RPAREN LBRACE statements RBRACE
+    (2) params -> . TYPE ID
+    (3) params -> . TYPE ID COMMA params
+    (4) params -> . empty
+    (16) empty -> .
 
-    LPAREN          shift and go to state 7
-    NUMBER          shift and go to state 8
-    ID              shift and go to state 5
+    TYPE            shift and go to state 5
+    RPAREN          reduce using rule 16 (empty -> .)
 
-    expression                     shift and go to state 6
+    params                         shift and go to state 6
+    empty                          shift and go to state 7
 
 state 5
 
-    (8) expression -> ID .
+    (2) params -> TYPE . ID
+    (3) params -> TYPE . ID COMMA params
 
-    SEMICOLON       reduce using rule 8 (expression -> ID .)
-    PLUS            reduce using rule 8 (expression -> ID .)
-    MINUS           reduce using rule 8 (expression -> ID .)
-    TIMES           reduce using rule 8 (expression -> ID .)
-    DIVIDE          reduce using rule 8 (expression -> ID .)
-    RPAREN          reduce using rule 8 (expression -> ID .)
+    ID              shift and go to state 8
 
 
 state 6
 
-    (1) statement -> TYPE ID ASSIGN expression . SEMICOLON
-    (2) expression -> expression . PLUS expression
-    (3) expression -> expression . MINUS expression
-    (4) expression -> expression . TIMES expression
-    (5) expression -> expression . DIVIDE expression
+    (1) function -> TYPE ID LPAREN params . RPAREN LBRACE statements RBRACE
 
-    SEMICOLON       shift and go to state 9
-    PLUS            shift and go to state 10
-    MINUS           shift and go to state 11
-    TIMES           shift and go to state 12
-    DIVIDE          shift and go to state 13
+    RPAREN          shift and go to state 9
 
 
 state 7
 
-    (6) expression -> LPAREN . expression RPAREN
-    (2) expression -> . expression PLUS expression
-    (3) expression -> . expression MINUS expression
-    (4) expression -> . expression TIMES expression
-    (5) expression -> . expression DIVIDE expression
-    (6) expression -> . LPAREN expression RPAREN
-    (7) expression -> . NUMBER
-    (8) expression -> . ID
+    (4) params -> empty .
 
-    LPAREN          shift and go to state 7
-    NUMBER          shift and go to state 8
-    ID              shift and go to state 5
+    RPAREN          reduce using rule 4 (params -> empty .)
 
-    expression                     shift and go to state 14
 
 state 8
 
-    (7) expression -> NUMBER .
+    (2) params -> TYPE ID .
+    (3) params -> TYPE ID . COMMA params
 
-    SEMICOLON       reduce using rule 7 (expression -> NUMBER .)
-    PLUS            reduce using rule 7 (expression -> NUMBER .)
-    MINUS           reduce using rule 7 (expression -> NUMBER .)
-    TIMES           reduce using rule 7 (expression -> NUMBER .)
-    DIVIDE          reduce using rule 7 (expression -> NUMBER .)
-    RPAREN          reduce using rule 7 (expression -> NUMBER .)
+    RPAREN          reduce using rule 2 (params -> TYPE ID .)
+    COMMA           shift and go to state 10
 
 
 state 9
 
-    (1) statement -> TYPE ID ASSIGN expression SEMICOLON .
+    (1) function -> TYPE ID LPAREN params RPAREN . LBRACE statements RBRACE
 
-    $end            reduce using rule 1 (statement -> TYPE ID ASSIGN expression SEMICOLON .)
+    LBRACE          shift and go to state 11
 
 
 state 10
 
-    (2) expression -> expression PLUS . expression
-    (2) expression -> . expression PLUS expression
-    (3) expression -> . expression MINUS expression
-    (4) expression -> . expression TIMES expression
-    (5) expression -> . expression DIVIDE expression
-    (6) expression -> . LPAREN expression RPAREN
-    (7) expression -> . NUMBER
-    (8) expression -> . ID
+    (3) params -> TYPE ID COMMA . params
+    (2) params -> . TYPE ID
+    (3) params -> . TYPE ID COMMA params
+    (4) params -> . empty
+    (16) empty -> .
 
-    LPAREN          shift and go to state 7
-    NUMBER          shift and go to state 8
-    ID              shift and go to state 5
+    TYPE            shift and go to state 5
+    RPAREN          reduce using rule 16 (empty -> .)
 
-    expression                     shift and go to state 15
+    params                         shift and go to state 12
+    empty                          shift and go to state 7
 
 state 11
 
-    (3) expression -> expression MINUS . expression
-    (2) expression -> . expression PLUS expression
-    (3) expression -> . expression MINUS expression
-    (4) expression -> . expression TIMES expression
-    (5) expression -> . expression DIVIDE expression
-    (6) expression -> . LPAREN expression RPAREN
-    (7) expression -> . NUMBER
-    (8) expression -> . ID
+    (1) function -> TYPE ID LPAREN params RPAREN LBRACE . statements RBRACE
+    (5) statements -> . statement
+    (6) statements -> . statement statements
+    (7) statement -> . TYPE ID ASSIGN expression SEMICOLON
+    (8) statement -> . RETURN expression SEMICOLON
 
-    LPAREN          shift and go to state 7
-    NUMBER          shift and go to state 8
-    ID              shift and go to state 5
+    TYPE            shift and go to state 13
+    RETURN          shift and go to state 16
 
-    expression                     shift and go to state 16
+    statements                     shift and go to state 14
+    statement                      shift and go to state 15
 
 state 12
 
-    (4) expression -> expression TIMES . expression
-    (2) expression -> . expression PLUS expression
-    (3) expression -> . expression MINUS expression
-    (4) expression -> . expression TIMES expression
-    (5) expression -> . expression DIVIDE expression
-    (6) expression -> . LPAREN expression RPAREN
-    (7) expression -> . NUMBER
-    (8) expression -> . ID
+    (3) params -> TYPE ID COMMA params .
 
-    LPAREN          shift and go to state 7
-    NUMBER          shift and go to state 8
-    ID              shift and go to state 5
+    RPAREN          reduce using rule 3 (params -> TYPE ID COMMA params .)
 
-    expression                     shift and go to state 17
 
 state 13
 
-    (5) expression -> expression DIVIDE . expression
-    (2) expression -> . expression PLUS expression
-    (3) expression -> . expression MINUS expression
-    (4) expression -> . expression TIMES expression
-    (5) expression -> . expression DIVIDE expression
-    (6) expression -> . LPAREN expression RPAREN
-    (7) expression -> . NUMBER
-    (8) expression -> . ID
+    (7) statement -> TYPE . ID ASSIGN expression SEMICOLON
 
-    LPAREN          shift and go to state 7
-    NUMBER          shift and go to state 8
-    ID              shift and go to state 5
+    ID              shift and go to state 17
 
-    expression                     shift and go to state 18
 
 state 14
 
-    (6) expression -> LPAREN expression . RPAREN
-    (2) expression -> expression . PLUS expression
-    (3) expression -> expression . MINUS expression
-    (4) expression -> expression . TIMES expression
-    (5) expression -> expression . DIVIDE expression
+    (1) function -> TYPE ID LPAREN params RPAREN LBRACE statements . RBRACE
 
-    RPAREN          shift and go to state 19
-    PLUS            shift and go to state 10
-    MINUS           shift and go to state 11
-    TIMES           shift and go to state 12
-    DIVIDE          shift and go to state 13
+    RBRACE          shift and go to state 18
 
 
 state 15
 
-    (2) expression -> expression PLUS expression .
-    (2) expression -> expression . PLUS expression
-    (3) expression -> expression . MINUS expression
-    (4) expression -> expression . TIMES expression
-    (5) expression -> expression . DIVIDE expression
+    (5) statements -> statement .
+    (6) statements -> statement . statements
+    (5) statements -> . statement
+    (6) statements -> . statement statements
+    (7) statement -> . TYPE ID ASSIGN expression SEMICOLON
+    (8) statement -> . RETURN expression SEMICOLON
 
-  ! shift/reduce conflict for PLUS resolved as shift
-  ! shift/reduce conflict for MINUS resolved as shift
-  ! shift/reduce conflict for TIMES resolved as shift
-  ! shift/reduce conflict for DIVIDE resolved as shift
-    SEMICOLON       reduce using rule 2 (expression -> expression PLUS expression .)
-    RPAREN          reduce using rule 2 (expression -> expression PLUS expression .)
-    PLUS            shift and go to state 10
-    MINUS           shift and go to state 11
-    TIMES           shift and go to state 12
-    DIVIDE          shift and go to state 13
+    RBRACE          reduce using rule 5 (statements -> statement .)
+    TYPE            shift and go to state 13
+    RETURN          shift and go to state 16
 
-  ! PLUS            [ reduce using rule 2 (expression -> expression PLUS expression .) ]
-  ! MINUS           [ reduce using rule 2 (expression -> expression PLUS expression .) ]
-  ! TIMES           [ reduce using rule 2 (expression -> expression PLUS expression .) ]
-  ! DIVIDE          [ reduce using rule 2 (expression -> expression PLUS expression .) ]
-
+    statement                      shift and go to state 15
+    statements                     shift and go to state 19
 
 state 16
 
-    (3) expression -> expression MINUS expression .
-    (2) expression -> expression . PLUS expression
-    (3) expression -> expression . MINUS expression
-    (4) expression -> expression . TIMES expression
-    (5) expression -> expression . DIVIDE expression
+    (8) statement -> RETURN . expression SEMICOLON
+    (9) expression -> . expression PLUS expression
+    (10) expression -> . expression MINUS expression
+    (11) expression -> . expression TIMES expression
+    (12) expression -> . expression DIVIDE expression
+    (13) expression -> . LPAREN expression RPAREN
+    (14) expression -> . NUMBER
+    (15) expression -> . ID
 
-  ! shift/reduce conflict for PLUS resolved as shift
-  ! shift/reduce conflict for MINUS resolved as shift
-  ! shift/reduce conflict for TIMES resolved as shift
-  ! shift/reduce conflict for DIVIDE resolved as shift
-    SEMICOLON       reduce using rule 3 (expression -> expression MINUS expression .)
-    RPAREN          reduce using rule 3 (expression -> expression MINUS expression .)
-    PLUS            shift and go to state 10
-    MINUS           shift and go to state 11
-    TIMES           shift and go to state 12
-    DIVIDE          shift and go to state 13
+    LPAREN          shift and go to state 21
+    NUMBER          shift and go to state 22
+    ID              shift and go to state 23
 
-  ! PLUS            [ reduce using rule 3 (expression -> expression MINUS expression .) ]
-  ! MINUS           [ reduce using rule 3 (expression -> expression MINUS expression .) ]
-  ! TIMES           [ reduce using rule 3 (expression -> expression MINUS expression .) ]
-  ! DIVIDE          [ reduce using rule 3 (expression -> expression MINUS expression .) ]
-
+    expression                     shift and go to state 20
 
 state 17
 
-    (4) expression -> expression TIMES expression .
-    (2) expression -> expression . PLUS expression
-    (3) expression -> expression . MINUS expression
-    (4) expression -> expression . TIMES expression
-    (5) expression -> expression . DIVIDE expression
+    (7) statement -> TYPE ID . ASSIGN expression SEMICOLON
 
-  ! shift/reduce conflict for PLUS resolved as shift
-  ! shift/reduce conflict for MINUS resolved as shift
-  ! shift/reduce conflict for TIMES resolved as shift
-  ! shift/reduce conflict for DIVIDE resolved as shift
-    SEMICOLON       reduce using rule 4 (expression -> expression TIMES expression .)
-    RPAREN          reduce using rule 4 (expression -> expression TIMES expression .)
-    PLUS            shift and go to state 10
-    MINUS           shift and go to state 11
-    TIMES           shift and go to state 12
-    DIVIDE          shift and go to state 13
-
-  ! PLUS            [ reduce using rule 4 (expression -> expression TIMES expression .) ]
-  ! MINUS           [ reduce using rule 4 (expression -> expression TIMES expression .) ]
-  ! TIMES           [ reduce using rule 4 (expression -> expression TIMES expression .) ]
-  ! DIVIDE          [ reduce using rule 4 (expression -> expression TIMES expression .) ]
+    ASSIGN          shift and go to state 24
 
 
 state 18
 
-    (5) expression -> expression DIVIDE expression .
-    (2) expression -> expression . PLUS expression
-    (3) expression -> expression . MINUS expression
-    (4) expression -> expression . TIMES expression
-    (5) expression -> expression . DIVIDE expression
+    (1) function -> TYPE ID LPAREN params RPAREN LBRACE statements RBRACE .
+
+    $end            reduce using rule 1 (function -> TYPE ID LPAREN params RPAREN LBRACE statements RBRACE .)
+
+
+state 19
+
+    (6) statements -> statement statements .
+
+    RBRACE          reduce using rule 6 (statements -> statement statements .)
+
+
+state 20
+
+    (8) statement -> RETURN expression . SEMICOLON
+    (9) expression -> expression . PLUS expression
+    (10) expression -> expression . MINUS expression
+    (11) expression -> expression . TIMES expression
+    (12) expression -> expression . DIVIDE expression
+
+    SEMICOLON       shift and go to state 25
+    PLUS            shift and go to state 26
+    MINUS           shift and go to state 27
+    TIMES           shift and go to state 28
+    DIVIDE          shift and go to state 29
+
+
+state 21
+
+    (13) expression -> LPAREN . expression RPAREN
+    (9) expression -> . expression PLUS expression
+    (10) expression -> . expression MINUS expression
+    (11) expression -> . expression TIMES expression
+    (12) expression -> . expression DIVIDE expression
+    (13) expression -> . LPAREN expression RPAREN
+    (14) expression -> . NUMBER
+    (15) expression -> . ID
+
+    LPAREN          shift and go to state 21
+    NUMBER          shift and go to state 22
+    ID              shift and go to state 23
+
+    expression                     shift and go to state 30
+
+state 22
+
+    (14) expression -> NUMBER .
+
+    SEMICOLON       reduce using rule 14 (expression -> NUMBER .)
+    PLUS            reduce using rule 14 (expression -> NUMBER .)
+    MINUS           reduce using rule 14 (expression -> NUMBER .)
+    TIMES           reduce using rule 14 (expression -> NUMBER .)
+    DIVIDE          reduce using rule 14 (expression -> NUMBER .)
+    RPAREN          reduce using rule 14 (expression -> NUMBER .)
+
+
+state 23
+
+    (15) expression -> ID .
+
+    SEMICOLON       reduce using rule 15 (expression -> ID .)
+    PLUS            reduce using rule 15 (expression -> ID .)
+    MINUS           reduce using rule 15 (expression -> ID .)
+    TIMES           reduce using rule 15 (expression -> ID .)
+    DIVIDE          reduce using rule 15 (expression -> ID .)
+    RPAREN          reduce using rule 15 (expression -> ID .)
+
+
+state 24
+
+    (7) statement -> TYPE ID ASSIGN . expression SEMICOLON
+    (9) expression -> . expression PLUS expression
+    (10) expression -> . expression MINUS expression
+    (11) expression -> . expression TIMES expression
+    (12) expression -> . expression DIVIDE expression
+    (13) expression -> . LPAREN expression RPAREN
+    (14) expression -> . NUMBER
+    (15) expression -> . ID
+
+    LPAREN          shift and go to state 21
+    NUMBER          shift and go to state 22
+    ID              shift and go to state 23
+
+    expression                     shift and go to state 31
+
+state 25
+
+    (8) statement -> RETURN expression SEMICOLON .
+
+    TYPE            reduce using rule 8 (statement -> RETURN expression SEMICOLON .)
+    RETURN          reduce using rule 8 (statement -> RETURN expression SEMICOLON .)
+    RBRACE          reduce using rule 8 (statement -> RETURN expression SEMICOLON .)
+
+
+state 26
+
+    (9) expression -> expression PLUS . expression
+    (9) expression -> . expression PLUS expression
+    (10) expression -> . expression MINUS expression
+    (11) expression -> . expression TIMES expression
+    (12) expression -> . expression DIVIDE expression
+    (13) expression -> . LPAREN expression RPAREN
+    (14) expression -> . NUMBER
+    (15) expression -> . ID
+
+    LPAREN          shift and go to state 21
+    NUMBER          shift and go to state 22
+    ID              shift and go to state 23
+
+    expression                     shift and go to state 32
+
+state 27
+
+    (10) expression -> expression MINUS . expression
+    (9) expression -> . expression PLUS expression
+    (10) expression -> . expression MINUS expression
+    (11) expression -> . expression TIMES expression
+    (12) expression -> . expression DIVIDE expression
+    (13) expression -> . LPAREN expression RPAREN
+    (14) expression -> . NUMBER
+    (15) expression -> . ID
+
+    LPAREN          shift and go to state 21
+    NUMBER          shift and go to state 22
+    ID              shift and go to state 23
+
+    expression                     shift and go to state 33
+
+state 28
+
+    (11) expression -> expression TIMES . expression
+    (9) expression -> . expression PLUS expression
+    (10) expression -> . expression MINUS expression
+    (11) expression -> . expression TIMES expression
+    (12) expression -> . expression DIVIDE expression
+    (13) expression -> . LPAREN expression RPAREN
+    (14) expression -> . NUMBER
+    (15) expression -> . ID
+
+    LPAREN          shift and go to state 21
+    NUMBER          shift and go to state 22
+    ID              shift and go to state 23
+
+    expression                     shift and go to state 34
+
+state 29
+
+    (12) expression -> expression DIVIDE . expression
+    (9) expression -> . expression PLUS expression
+    (10) expression -> . expression MINUS expression
+    (11) expression -> . expression TIMES expression
+    (12) expression -> . expression DIVIDE expression
+    (13) expression -> . LPAREN expression RPAREN
+    (14) expression -> . NUMBER
+    (15) expression -> . ID
+
+    LPAREN          shift and go to state 21
+    NUMBER          shift and go to state 22
+    ID              shift and go to state 23
+
+    expression                     shift and go to state 35
+
+state 30
+
+    (13) expression -> LPAREN expression . RPAREN
+    (9) expression -> expression . PLUS expression
+    (10) expression -> expression . MINUS expression
+    (11) expression -> expression . TIMES expression
+    (12) expression -> expression . DIVIDE expression
+
+    RPAREN          shift and go to state 36
+    PLUS            shift and go to state 26
+    MINUS           shift and go to state 27
+    TIMES           shift and go to state 28
+    DIVIDE          shift and go to state 29
+
+
+state 31
+
+    (7) statement -> TYPE ID ASSIGN expression . SEMICOLON
+    (9) expression -> expression . PLUS expression
+    (10) expression -> expression . MINUS expression
+    (11) expression -> expression . TIMES expression
+    (12) expression -> expression . DIVIDE expression
+
+    SEMICOLON       shift and go to state 37
+    PLUS            shift and go to state 26
+    MINUS           shift and go to state 27
+    TIMES           shift and go to state 28
+    DIVIDE          shift and go to state 29
+
+
+state 32
+
+    (9) expression -> expression PLUS expression .
+    (9) expression -> expression . PLUS expression
+    (10) expression -> expression . MINUS expression
+    (11) expression -> expression . TIMES expression
+    (12) expression -> expression . DIVIDE expression
 
   ! shift/reduce conflict for PLUS resolved as shift
   ! shift/reduce conflict for MINUS resolved as shift
   ! shift/reduce conflict for TIMES resolved as shift
   ! shift/reduce conflict for DIVIDE resolved as shift
-    SEMICOLON       reduce using rule 5 (expression -> expression DIVIDE expression .)
-    RPAREN          reduce using rule 5 (expression -> expression DIVIDE expression .)
-    PLUS            shift and go to state 10
-    MINUS           shift and go to state 11
-    TIMES           shift and go to state 12
-    DIVIDE          shift and go to state 13
+    SEMICOLON       reduce using rule 9 (expression -> expression PLUS expression .)
+    RPAREN          reduce using rule 9 (expression -> expression PLUS expression .)
+    PLUS            shift and go to state 26
+    MINUS           shift and go to state 27
+    TIMES           shift and go to state 28
+    DIVIDE          shift and go to state 29
 
-  ! PLUS            [ reduce using rule 5 (expression -> expression DIVIDE expression .) ]
-  ! MINUS           [ reduce using rule 5 (expression -> expression DIVIDE expression .) ]
-  ! TIMES           [ reduce using rule 5 (expression -> expression DIVIDE expression .) ]
-  ! DIVIDE          [ reduce using rule 5 (expression -> expression DIVIDE expression .) ]
+  ! PLUS            [ reduce using rule 9 (expression -> expression PLUS expression .) ]
+  ! MINUS           [ reduce using rule 9 (expression -> expression PLUS expression .) ]
+  ! TIMES           [ reduce using rule 9 (expression -> expression PLUS expression .) ]
+  ! DIVIDE          [ reduce using rule 9 (expression -> expression PLUS expression .) ]
 
 
-state 19
+state 33
 
-    (6) expression -> LPAREN expression RPAREN .
+    (10) expression -> expression MINUS expression .
+    (9) expression -> expression . PLUS expression
+    (10) expression -> expression . MINUS expression
+    (11) expression -> expression . TIMES expression
+    (12) expression -> expression . DIVIDE expression
 
-    SEMICOLON       reduce using rule 6 (expression -> LPAREN expression RPAREN .)
-    PLUS            reduce using rule 6 (expression -> LPAREN expression RPAREN .)
-    MINUS           reduce using rule 6 (expression -> LPAREN expression RPAREN .)
-    TIMES           reduce using rule 6 (expression -> LPAREN expression RPAREN .)
-    DIVIDE          reduce using rule 6 (expression -> LPAREN expression RPAREN .)
-    RPAREN          reduce using rule 6 (expression -> LPAREN expression RPAREN .)
+  ! shift/reduce conflict for PLUS resolved as shift
+  ! shift/reduce conflict for MINUS resolved as shift
+  ! shift/reduce conflict for TIMES resolved as shift
+  ! shift/reduce conflict for DIVIDE resolved as shift
+    SEMICOLON       reduce using rule 10 (expression -> expression MINUS expression .)
+    RPAREN          reduce using rule 10 (expression -> expression MINUS expression .)
+    PLUS            shift and go to state 26
+    MINUS           shift and go to state 27
+    TIMES           shift and go to state 28
+    DIVIDE          shift and go to state 29
+
+  ! PLUS            [ reduce using rule 10 (expression -> expression MINUS expression .) ]
+  ! MINUS           [ reduce using rule 10 (expression -> expression MINUS expression .) ]
+  ! TIMES           [ reduce using rule 10 (expression -> expression MINUS expression .) ]
+  ! DIVIDE          [ reduce using rule 10 (expression -> expression MINUS expression .) ]
+
+
+state 34
+
+    (11) expression -> expression TIMES expression .
+    (9) expression -> expression . PLUS expression
+    (10) expression -> expression . MINUS expression
+    (11) expression -> expression . TIMES expression
+    (12) expression -> expression . DIVIDE expression
+
+  ! shift/reduce conflict for PLUS resolved as shift
+  ! shift/reduce conflict for MINUS resolved as shift
+  ! shift/reduce conflict for TIMES resolved as shift
+  ! shift/reduce conflict for DIVIDE resolved as shift
+    SEMICOLON       reduce using rule 11 (expression -> expression TIMES expression .)
+    RPAREN          reduce using rule 11 (expression -> expression TIMES expression .)
+    PLUS            shift and go to state 26
+    MINUS           shift and go to state 27
+    TIMES           shift and go to state 28
+    DIVIDE          shift and go to state 29
+
+  ! PLUS            [ reduce using rule 11 (expression -> expression TIMES expression .) ]
+  ! MINUS           [ reduce using rule 11 (expression -> expression TIMES expression .) ]
+  ! TIMES           [ reduce using rule 11 (expression -> expression TIMES expression .) ]
+  ! DIVIDE          [ reduce using rule 11 (expression -> expression TIMES expression .) ]
+
+
+state 35
+
+    (12) expression -> expression DIVIDE expression .
+    (9) expression -> expression . PLUS expression
+    (10) expression -> expression . MINUS expression
+    (11) expression -> expression . TIMES expression
+    (12) expression -> expression . DIVIDE expression
+
+  ! shift/reduce conflict for PLUS resolved as shift
+  ! shift/reduce conflict for MINUS resolved as shift
+  ! shift/reduce conflict for TIMES resolved as shift
+  ! shift/reduce conflict for DIVIDE resolved as shift
+    SEMICOLON       reduce using rule 12 (expression -> expression DIVIDE expression .)
+    RPAREN          reduce using rule 12 (expression -> expression DIVIDE expression .)
+    PLUS            shift and go to state 26
+    MINUS           shift and go to state 27
+    TIMES           shift and go to state 28
+    DIVIDE          shift and go to state 29
+
+  ! PLUS            [ reduce using rule 12 (expression -> expression DIVIDE expression .) ]
+  ! MINUS           [ reduce using rule 12 (expression -> expression DIVIDE expression .) ]
+  ! TIMES           [ reduce using rule 12 (expression -> expression DIVIDE expression .) ]
+  ! DIVIDE          [ reduce using rule 12 (expression -> expression DIVIDE expression .) ]
+
+
+state 36
+
+    (13) expression -> LPAREN expression RPAREN .
+
+    SEMICOLON       reduce using rule 13 (expression -> LPAREN expression RPAREN .)
+    PLUS            reduce using rule 13 (expression -> LPAREN expression RPAREN .)
+    MINUS           reduce using rule 13 (expression -> LPAREN expression RPAREN .)
+    TIMES           reduce using rule 13 (expression -> LPAREN expression RPAREN .)
+    DIVIDE          reduce using rule 13 (expression -> LPAREN expression RPAREN .)
+    RPAREN          reduce using rule 13 (expression -> LPAREN expression RPAREN .)
+
+
+state 37
+
+    (7) statement -> TYPE ID ASSIGN expression SEMICOLON .
+
+    TYPE            reduce using rule 7 (statement -> TYPE ID ASSIGN expression SEMICOLON .)
+    RETURN          reduce using rule 7 (statement -> TYPE ID ASSIGN expression SEMICOLON .)
+    RBRACE          reduce using rule 7 (statement -> TYPE ID ASSIGN expression SEMICOLON .)
 
 WARNING: 
 WARNING: Conflicts:
 WARNING: 
-WARNING: shift/reduce conflict for PLUS in state 15 resolved as shift
-WARNING: shift/reduce conflict for MINUS in state 15 resolved as shift
-WARNING: shift/reduce conflict for TIMES in state 15 resolved as shift
-WARNING: shift/reduce conflict for DIVIDE in state 15 resolved as shift
-WARNING: shift/reduce conflict for PLUS in state 16 resolved as shift
-WARNING: shift/reduce conflict for MINUS in state 16 resolved as shift
-WARNING: shift/reduce conflict for TIMES in state 16 resolved as shift
-WARNING: shift/reduce conflict for DIVIDE in state 16 resolved as shift
-WARNING: shift/reduce conflict for PLUS in state 17 resolved as shift
-WARNING: shift/reduce conflict for MINUS in state 17 resolved as shift
-WARNING: shift/reduce conflict for TIMES in state 17 resolved as shift
-WARNING: shift/reduce conflict for DIVIDE in state 17 resolved as shift
-WARNING: shift/reduce conflict for PLUS in state 18 resolved as shift
-WARNING: shift/reduce conflict for MINUS in state 18 resolved as shift
-WARNING: shift/reduce conflict for TIMES in state 18 resolved as shift
-WARNING: shift/reduce conflict for DIVIDE in state 18 resolved as shift
+WARNING: shift/reduce conflict for PLUS in state 32 resolved as shift
+WARNING: shift/reduce conflict for MINUS in state 32 resolved as shift
+WARNING: shift/reduce conflict for TIMES in state 32 resolved as shift
+WARNING: shift/reduce conflict for DIVIDE in state 32 resolved as shift
+WARNING: shift/reduce conflict for PLUS in state 33 resolved as shift
+WARNING: shift/reduce conflict for MINUS in state 33 resolved as shift
+WARNING: shift/reduce conflict for TIMES in state 33 resolved as shift
+WARNING: shift/reduce conflict for DIVIDE in state 33 resolved as shift
+WARNING: shift/reduce conflict for PLUS in state 34 resolved as shift
+WARNING: shift/reduce conflict for MINUS in state 34 resolved as shift
+WARNING: shift/reduce conflict for TIMES in state 34 resolved as shift
+WARNING: shift/reduce conflict for DIVIDE in state 34 resolved as shift
+WARNING: shift/reduce conflict for PLUS in state 35 resolved as shift
+WARNING: shift/reduce conflict for MINUS in state 35 resolved as shift
+WARNING: shift/reduce conflict for TIMES in state 35 resolved as shift
+WARNING: shift/reduce conflict for DIVIDE in state 35 resolved as shift

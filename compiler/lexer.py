@@ -3,7 +3,7 @@ import ply.lex as lex
 tokens = (
     'ID', 'NUMBER', 'PLUS', 'MINUS', 'TIMES', 'DIVIDE',
     'LPAREN', 'RPAREN', 'LBRACE', 'RBRACE', 'SEMICOLON',
-    'ASSIGN', 'TYPE'
+    'ASSIGN', 'TYPE', 'RETURN', 'COMMA'
 )
 
 t_PLUS = r'\+'
@@ -16,11 +16,16 @@ t_LBRACE = r'\{'
 t_RBRACE = r'\}'
 t_SEMICOLON = r';'
 t_ASSIGN = r'='
+t_COMMA = r','  # Se añade el token COMMA
 
 t_ignore = ' \t'
 
 def t_TYPE(t):
-    r'int|float|double'
+    r'int|float|double|void'
+    return t
+
+def t_RETURN(t):
+    r'return'
     return t
 
 def t_ID(t):

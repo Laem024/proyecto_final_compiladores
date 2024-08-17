@@ -6,9 +6,9 @@ _tabversion = '3.10'
 
 _lr_method = 'LALR'
 
-_lr_signature = 'ASSIGN DIVIDE ID LBRACE LPAREN MINUS NUMBER PLUS RBRACE RPAREN SEMICOLON TIMES TYPEstatement : TYPE ID ASSIGN expression SEMICOLONexpression : expression PLUS expression\n                  | expression MINUS expression\n                  | expression TIMES expression\n                  | expression DIVIDE expressionexpression : LPAREN expression RPARENexpression : NUMBERexpression : ID'
+_lr_signature = 'ASSIGN COMMA DIVIDE ID LBRACE LPAREN MINUS NUMBER PLUS RBRACE RETURN RPAREN SEMICOLON TIMES TYPEfunction : TYPE ID LPAREN params RPAREN LBRACE statements RBRACEparams : TYPE ID\n              | TYPE ID COMMA params\n              | emptystatements : statement\n                  | statement statementsstatement : TYPE ID ASSIGN expression SEMICOLONstatement : RETURN expression SEMICOLONexpression : expression PLUS expression\n                  | expression MINUS expression\n                  | expression TIMES expression\n                  | expression DIVIDE expressionexpression : LPAREN expression RPARENexpression : NUMBERexpression : IDempty :'
     
-_lr_action_items = {'TYPE':([0,],[2,]),'$end':([1,9,],[0,-1,]),'ID':([2,4,7,10,11,12,13,],[3,5,5,5,5,5,5,]),'ASSIGN':([3,],[4,]),'LPAREN':([4,7,10,11,12,13,],[7,7,7,7,7,7,]),'NUMBER':([4,7,10,11,12,13,],[8,8,8,8,8,8,]),'SEMICOLON':([5,6,8,15,16,17,18,19,],[-8,9,-7,-2,-3,-4,-5,-6,]),'PLUS':([5,6,8,14,15,16,17,18,19,],[-8,10,-7,10,10,10,10,10,-6,]),'MINUS':([5,6,8,14,15,16,17,18,19,],[-8,11,-7,11,11,11,11,11,-6,]),'TIMES':([5,6,8,14,15,16,17,18,19,],[-8,12,-7,12,12,12,12,12,-6,]),'DIVIDE':([5,6,8,14,15,16,17,18,19,],[-8,13,-7,13,13,13,13,13,-6,]),'RPAREN':([5,8,14,15,16,17,18,19,],[-8,-7,19,-2,-3,-4,-5,-6,]),}
+_lr_action_items = {'TYPE':([0,4,10,11,15,25,37,],[2,5,5,13,13,-8,-7,]),'$end':([1,18,],[0,-1,]),'ID':([2,5,13,16,21,24,26,27,28,29,],[3,8,17,23,23,23,23,23,23,23,]),'LPAREN':([3,16,21,24,26,27,28,29,],[4,21,21,21,21,21,21,21,]),'RPAREN':([4,6,7,8,10,12,22,23,30,32,33,34,35,36,],[-16,9,-4,-2,-16,-3,-14,-15,36,-9,-10,-11,-12,-13,]),'COMMA':([8,],[10,]),'LBRACE':([9,],[11,]),'RETURN':([11,15,25,37,],[16,16,-8,-7,]),'RBRACE':([14,15,19,25,37,],[18,-5,-6,-8,-7,]),'NUMBER':([16,21,24,26,27,28,29,],[22,22,22,22,22,22,22,]),'ASSIGN':([17,],[24,]),'SEMICOLON':([20,22,23,31,32,33,34,35,36,],[25,-14,-15,37,-9,-10,-11,-12,-13,]),'PLUS':([20,22,23,30,31,32,33,34,35,36,],[26,-14,-15,26,26,26,26,26,26,-13,]),'MINUS':([20,22,23,30,31,32,33,34,35,36,],[27,-14,-15,27,27,27,27,27,27,-13,]),'TIMES':([20,22,23,30,31,32,33,34,35,36,],[28,-14,-15,28,28,28,28,28,28,-13,]),'DIVIDE':([20,22,23,30,31,32,33,34,35,36,],[29,-14,-15,29,29,29,29,29,29,-13,]),}
 
 _lr_action = {}
 for _k, _v in _lr_action_items.items():
@@ -17,7 +17,7 @@ for _k, _v in _lr_action_items.items():
       _lr_action[_x][_k] = _y
 del _lr_action_items
 
-_lr_goto_items = {'statement':([0,],[1,]),'expression':([4,7,10,11,12,13,],[6,14,15,16,17,18,]),}
+_lr_goto_items = {'function':([0,],[1,]),'params':([4,10,],[6,12,]),'empty':([4,10,],[7,7,]),'statements':([11,15,],[14,19,]),'statement':([11,15,],[15,15,]),'expression':([16,21,24,26,27,28,29,],[20,30,31,32,33,34,35,]),}
 
 _lr_goto = {}
 for _k, _v in _lr_goto_items.items():
@@ -26,13 +26,21 @@ for _k, _v in _lr_goto_items.items():
        _lr_goto[_x][_k] = _y
 del _lr_goto_items
 _lr_productions = [
-  ("S' -> statement","S'",1,None,None,None),
-  ('statement -> TYPE ID ASSIGN expression SEMICOLON','statement',5,'p_statement_assign','parser.py',5),
-  ('expression -> expression PLUS expression','expression',3,'p_expression_binop','parser.py',9),
-  ('expression -> expression MINUS expression','expression',3,'p_expression_binop','parser.py',10),
-  ('expression -> expression TIMES expression','expression',3,'p_expression_binop','parser.py',11),
-  ('expression -> expression DIVIDE expression','expression',3,'p_expression_binop','parser.py',12),
-  ('expression -> LPAREN expression RPAREN','expression',3,'p_expression_group','parser.py',16),
-  ('expression -> NUMBER','expression',1,'p_expression_number','parser.py',20),
-  ('expression -> ID','expression',1,'p_expression_id','parser.py',24),
+  ("S' -> function","S'",1,None,None,None),
+  ('function -> TYPE ID LPAREN params RPAREN LBRACE statements RBRACE','function',8,'p_function','parser.py',5),
+  ('params -> TYPE ID','params',2,'p_params','parser.py',9),
+  ('params -> TYPE ID COMMA params','params',4,'p_params','parser.py',10),
+  ('params -> empty','params',1,'p_params','parser.py',11),
+  ('statements -> statement','statements',1,'p_statements','parser.py',20),
+  ('statements -> statement statements','statements',2,'p_statements','parser.py',21),
+  ('statement -> TYPE ID ASSIGN expression SEMICOLON','statement',5,'p_statement_assign','parser.py',28),
+  ('statement -> RETURN expression SEMICOLON','statement',3,'p_statement_return','parser.py',32),
+  ('expression -> expression PLUS expression','expression',3,'p_expression_binop','parser.py',36),
+  ('expression -> expression MINUS expression','expression',3,'p_expression_binop','parser.py',37),
+  ('expression -> expression TIMES expression','expression',3,'p_expression_binop','parser.py',38),
+  ('expression -> expression DIVIDE expression','expression',3,'p_expression_binop','parser.py',39),
+  ('expression -> LPAREN expression RPAREN','expression',3,'p_expression_group','parser.py',43),
+  ('expression -> NUMBER','expression',1,'p_expression_number','parser.py',47),
+  ('expression -> ID','expression',1,'p_expression_id','parser.py',51),
+  ('empty -> <empty>','empty',0,'p_empty','parser.py',55),
 ]
