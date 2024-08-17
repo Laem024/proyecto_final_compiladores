@@ -16,9 +16,16 @@ t_LBRACE = r'\{'
 t_RBRACE = r'\}'
 t_SEMICOLON = r';'
 t_ASSIGN = r'='
-t_COMMA = r','  # Se añade el token COMMA
+t_COMMA = r','
 
-t_ignore = ' \t'
+t_ignore = ' \t'  # Ignorar espacios en blanco y tabulaciones
+
+# Manejar los saltos de línea
+def t_newline(t):
+    r'\n+'
+    t.lexer.lineno += len(t.value)
+
+lexer_errors = []
 
 def t_TYPE(t):
     r'int|float|double|void'
@@ -38,7 +45,8 @@ def t_NUMBER(t):
     return t
 
 def t_error(t):
-    print(f"Illegal character '{t.value[0]}'")
+    error_message = f"Illegal character '{t.value[0]}' at line {t.lineno}"
+    lexer_errors.append(error_message)
     t.lexer.skip(1)
 
 lexer = lex.lex()

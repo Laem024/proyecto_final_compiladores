@@ -1,7 +1,7 @@
 import tkinter as tk
 from tkinter import scrolledtext
-from compiler.lexer import lexer
-from compiler.parser import parser
+from compiler.lexer import lexer, lexer_errors  # Asegúrate de que lexer_errors esté correctamente importado
+from compiler.parser import parser, parser_errors
 from compiler.codegen import generate_code, generate_javascript, symbol_table
 
 class CompilerGUI:
@@ -42,12 +42,21 @@ class CompilerGUI:
         self.javascript_code_text = scrolledtext.ScrolledText(root, wrap=tk.WORD, width=100, height=10)
         self.javascript_code_text.grid(row=8, column=0, columnspan=2)
 
+        self.errors_label = tk.Label(root, text="Errores:")
+        self.errors_label.grid(row=9, column=0, columnspan=2)
+
+        self.errors_text = scrolledtext.ScrolledText(root, wrap=tk.WORD, width=100, height=10)
+        self.errors_text.grid(row=10, column=0, columnspan=2)
+
     def compile_code(self):
         # Limpiar las áreas de salida antes de mostrar los nuevos resultados
         self.tokens_text.delete("1.0", tk.END)
         self.symbol_table_text.delete("1.0", tk.END)
         self.intermediate_code_text.delete("1.0", tk.END)
         self.javascript_code_text.delete("1.0", tk.END)
+        self.errors_text.delete("1.0", tk.END)
+        lexer_errors.clear()
+        parser_errors.clear()
 
         code = self.text_input.get("1.0", tk.END).strip()
         lexer.input(code)
@@ -62,6 +71,10 @@ class CompilerGUI:
 
         self.tokens_text.insert(tk.END, "\n".join(tokens_output) + "\n")
 
+        # Mostrar errores léxicos
+        if lexer_errors:
+            self.errors_text.insert(tk.END, "Errores Léxicos:\n" + "\n".join(lexer_errors) + "\n")
+
         # Análisis sintáctico y generación de código intermedio y JavaScript
         try:
             result = parser.parse(code)
@@ -72,8 +85,11 @@ class CompilerGUI:
                 self.symbol_table_text.insert(tk.END, str(symbol_table) + "\n")
                 self.javascript_code_text.insert(tk.END, js_code_gen + "\n")
         except Exception as e:
-            self.intermediate_code_text.insert(tk.END, f"Error: {str(e)}\n")
+            self.errors_text.insert(tk.END, f"Error: {str(e)}\n")
 
+        # Mostrar errores sintácticos
+        if parser_errors:
+            self.errors_text.insert(tk.END, "Errores Sintácticos:\n" + "\n".join(parser_errors) + "\n")
 
 if __name__ == "__main__":
     root = tk.Tk()

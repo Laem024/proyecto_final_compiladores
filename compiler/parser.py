@@ -1,6 +1,8 @@
 import ply.yacc as yacc
 from compiler.lexer import tokens
 
+parser_errors = []
+
 def p_function(p):
     'function : TYPE ID LPAREN params RPAREN LBRACE statements RBRACE'
     p[0] = ('function', p[1], p[2], p[4], p[7])
@@ -27,6 +29,10 @@ def p_statements(p):
 def p_statement_assign(p):
     'statement : TYPE ID ASSIGN expression SEMICOLON'
     p[0] = ('assign', p[1], p[2], p[4])
+
+def p_statement_expr(p):
+    'statement : expression SEMICOLON'
+    p[0] = p[1]
 
 def p_statement_return(p):
     'statement : RETURN expression SEMICOLON'
@@ -56,6 +62,10 @@ def p_empty(p):
     pass
 
 def p_error(p):
-    print("Syntax error in input!")
+    if p:
+        error_message = f"Syntax error at token '{p.value}', line {p.lineno}"
+        parser_errors.append(error_message)
+    else:
+        parser_errors.append("Syntax error at EOF")
 
 parser = yacc.yacc()
