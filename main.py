@@ -1,6 +1,6 @@
 import tkinter as tk
-from tkinter import scrolledtext
-from compiler.lexer import lexer, lexer_errors  # Asegúrate de que lexer_errors esté correctamente importado
+from tkinter import scrolledtext, filedialog, messagebox
+from compiler.lexer import lexer, lexer_errors
 from compiler.parser import parser, parser_errors
 from compiler.codegen import generate_code, generate_javascript, symbol_table
 
@@ -45,8 +45,12 @@ class CompilerGUI:
         self.errors_label = tk.Label(root, text="Errores:")
         self.errors_label.grid(row=9, column=0, columnspan=2)
 
-        self.errors_text = scrolledtext.ScrolledText(root, wrap=tk.WORD, width=100, height=10)
+        # Reducir el alto del cuadro de errores
+        self.errors_text = scrolledtext.ScrolledText(root, wrap=tk.WORD, width=100, height=5)
         self.errors_text.grid(row=10, column=0, columnspan=2)
+
+        self.save_button = tk.Button(root, text="Guardar como JavaScript", command=self.save_javascript)
+        self.save_button.grid(row=11, column=0, columnspan=2)
 
     def compile_code(self):
         # Limpiar las áreas de salida antes de mostrar los nuevos resultados
@@ -84,12 +88,26 @@ class CompilerGUI:
                 self.intermediate_code_text.insert(tk.END, code_gen + "\n")
                 self.symbol_table_text.insert(tk.END, str(symbol_table) + "\n")
                 self.javascript_code_text.insert(tk.END, js_code_gen + "\n")
+                self.generated_js_code = js_code_gen  # Guardar el código JS generado
+            else:
+                self.generated_js_code = ""
         except Exception as e:
             self.errors_text.insert(tk.END, f"Error: {str(e)}\n")
+            self.generated_js_code = ""
 
         # Mostrar errores sintácticos
         if parser_errors:
             self.errors_text.insert(tk.END, "Errores Sintácticos:\n" + "\n".join(parser_errors) + "\n")
+
+    def save_javascript(self):
+        if hasattr(self, 'generated_js_code') and self.generated_js_code:
+            file_path = filedialog.asksaveasfilename(defaultextension=".js", filetypes=[("JavaScript Files", "*.js")])
+            if file_path:
+                with open(file_path, 'w') as file:
+                    file.write(self.generated_js_code)
+                messagebox.showinfo("Guardado", "El archivo JavaScript se ha guardado correctamente.")
+        else:
+            messagebox.showwarning("Advertencia", "No hay código JavaScript generado para guardar.")
 
 if __name__ == "__main__":
     root = tk.Tk()
